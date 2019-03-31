@@ -2,7 +2,11 @@ package com.example.projektsolo;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.Build;
+import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +17,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class MainActivity extends AppCompatActivity implements MyDialog.myDialogListener {
 
@@ -21,13 +26,28 @@ public class MainActivity extends AppCompatActivity implements MyDialog.myDialog
     public ArrayList<DBItem> items = new ArrayList<>();
     private DatabaseHelper myDB;
     private Button btnShowSetting;
+    private boolean sort = false;
+    private static final int SECOND_ACTIVITY_REQUEST_CODE = 0;
+    SharedPreferences sharedPreferences;
 
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         myDB = new DatabaseHelper(this);
         MainActivity.context = getApplicationContext();
         setContentView(R.layout.activity_main);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener =
+                new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                initRecycleView();
+            }
+        };
+        sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
 
         initRecycleView();
         Button addBtn = (Button) findViewById(R.id.showMyDialog);
@@ -36,7 +56,8 @@ public class MainActivity extends AppCompatActivity implements MyDialog.myDialog
         btnShowSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,SettingActivity.class));
+                Intent intent = new Intent(MainActivity.this,SettingActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -47,9 +68,13 @@ public class MainActivity extends AppCompatActivity implements MyDialog.myDialog
               }
           }
         );
+
+
+
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void initRecycleView()
     {
         items = new ArrayList<>();
@@ -66,6 +91,16 @@ public class MainActivity extends AppCompatActivity implements MyDialog.myDialog
         }
 
         Log.d(TAG, "initRecycleView: init");
+        boolean sort = sharedPreferences.getBoolean("Sort_alphabetically",false);
+        if(sort)
+        {
+            items.sort(new Comparator<DBItem>() {
+                @Override
+                public int compare(DBItem o1, DBItem o2) {
+                    return o1.getName().compareToIgnoreCase( o2.getName() );
+                }
+            });
+        }
         RecyclerView recycleview = findViewById(R.id.recycle_view);
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(this,items, myDB);
         recycleview.setAdapter(adapter);
@@ -73,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements MyDialog.myDialog
 
     }
 
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void updateList()
     {
         initRecycleView();
@@ -86,11 +121,13 @@ public class MainActivity extends AppCompatActivity implements MyDialog.myDialog
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void additem(String title) {
         myDB.addData(title);
         initRecycleView();
     }
+
 
 
 }

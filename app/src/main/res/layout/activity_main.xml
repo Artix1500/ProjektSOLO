@@ -6,7 +6,9 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@android:color/white"
 android:orientation="vertical"
-android:weightSum="10">
+android:weightSum="10"
+    android:id="@+id/mainAct"
+    >
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycle_view"
