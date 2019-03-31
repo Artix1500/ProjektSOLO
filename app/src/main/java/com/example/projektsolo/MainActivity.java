@@ -1,6 +1,7 @@
 package com.example.projektsolo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements MyDialog.myDialog
     private static Context context;
     public ArrayList<DBItem> items = new ArrayList<>();
     private DatabaseHelper myDB;
+    private Button btnShowSetting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,14 @@ public class MainActivity extends AppCompatActivity implements MyDialog.myDialog
 
         initRecycleView();
         Button addBtn = (Button) findViewById(R.id.showMyDialog);
+        btnShowSetting = (Button) findViewById(R.id.btnShowSetting);
+
+        btnShowSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,SettingActivity.class));
+            }
+        });
 
         addBtn.setOnClickListener(new View.OnClickListener() {
               @Override
