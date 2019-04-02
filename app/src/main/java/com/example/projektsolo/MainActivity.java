@@ -1,5 +1,4 @@
 package com.example.projektsolo;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,51 +25,27 @@ public class MainActivity extends AppCompatActivity implements MyDialog.myDialog
     public ArrayList<DBItem> items = new ArrayList<>();
     private DatabaseHelper myDB;
     private Button btnShowSetting;
-    private boolean sort = false;
-    private static final int SECOND_ACTIVITY_REQUEST_CODE = 0;
+    private Button addBtn;
     SharedPreferences sharedPreferences;
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        myDB = new DatabaseHelper(this);
         MainActivity.context = getApplicationContext();
         setContentView(R.layout.activity_main);
+
+        myDB = new DatabaseHelper(this);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener =
-                new SharedPreferences.OnSharedPreferenceChangeListener() {
-            @Override
-            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                initRecycleView();
-            }
-        };
-        sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
+        addBtn = (Button) findViewById(R.id.showMyDialog);
+        btnShowSetting = (Button) findViewById(R.id.ShowSetting);
 
         initRecycleView();
-        Button addBtn = (Button) findViewById(R.id.showMyDialog);
-        btnShowSetting = (Button) findViewById(R.id.btnShowSetting);
+        addListenersToButtons();
 
-        btnShowSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,SettingActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        addBtn.setOnClickListener(new View.OnClickListener() {
-              @Override
-              public void onClick(View v) {
-                    openDialog();
-              }
-          }
-        );
-
-
-
+        SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener = createSharedPreferenceListener();
+        sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
     }
 
 
@@ -90,7 +65,6 @@ public class MainActivity extends AppCompatActivity implements MyDialog.myDialog
             }
         }
 
-        Log.d(TAG, "initRecycleView: init");
         boolean sort = sharedPreferences.getBoolean("Sort_alphabetically",false);
         if(sort)
         {
@@ -120,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements MyDialog.myDialog
         mydialog.show(getSupportFragmentManager(), "My dialog");
     }
 
-
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void additem(String title) {
@@ -128,6 +101,32 @@ public class MainActivity extends AppCompatActivity implements MyDialog.myDialog
         initRecycleView();
     }
 
+    private SharedPreferences.OnSharedPreferenceChangeListener createSharedPreferenceListener() {
+        return new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                initRecycleView();
+            }
+        };
+    }
 
+    private void addListenersToButtons() {
+        btnShowSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,SettingActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        addBtn.setOnClickListener(new View.OnClickListener() {
+              @Override
+              public void onClick(View v) {
+                  openDialog();
+              }
+          }
+        );
+    }
 
 }

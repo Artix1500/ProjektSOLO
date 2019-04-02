@@ -13,32 +13,37 @@ android:weightSum="10"
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycle_view"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="match_parent"
         android:layout_weight="8.5"
         tools:context=".ShoppingCartActivity" />
 
-<RelativeLayout
-    android:layout_weight = "1.5"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_marginEnd="0dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginEnd="0dp"
+        android:layout_weight="10"
+        android:gravity = "top"
+
+        >
+
+    </RelativeLayout>
 
     <Button
         android:id="@+id/showMyDialog"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:text="Add item"
         android:textColor="@android:color/white"
         android:textSize="20sp" />
 
     <Button
-        android:id="@+id/btnShowSetting"
-        android:layout_width="wrap_content"
+        android:id="@+id/ShowSetting"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button"
+        android:layout_alignParentRight="true"
+        android:text="Settings"
         android:textColor="@android:color/white"
-        android:textSize="20sp"/>
-</RelativeLayout>
+        android:textSize="20sp" />
 
 </LinearLayout>
